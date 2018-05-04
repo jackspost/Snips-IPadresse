@@ -44,12 +44,12 @@ def action_wrapper(hermes, intentMessage, conf):
         ip_addr = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
     except ValueError:
         try:
-        ip_addr = ni.ifaddresses('eth0')[ni.AF_INET][0]['addr']
+            ip_addr = ni.ifaddresses('eth0')[ni.AF_INET][0]['addr']
         except ValueError:
-        try:
-            ip_addr = ni.ifaddresses('wlan1')[ni.AF_INET][0]['addr']
-        except ValueError:
-            err_code = 1
+            try:
+                ip_addr = ni.ifaddresses('wlan1')[ni.AF_INET][0]['addr']
+            except ValueError:
+                err_code = 1
     if err_code == 0:
         ip = ip_addr.split(".")
         result_sentence = "Die IP-Adresse von diesem Gerät lautet {} Punkt {} Punkt {} Punkt {} .".format(
