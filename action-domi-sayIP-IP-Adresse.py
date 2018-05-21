@@ -25,8 +25,10 @@ def read_configuration_file(configuration_file):
         return dict()
 
 def subscribe_intent_callback(hermes, intentMessage):
-    conf = read_configuration_file(CONFIG_INI)
-    action_wrapper(hermes, intentMessage, conf)
+    user,intentname = intentMessage.intent.intent_name.split(':')  # the user can fork the intent with this method
+    if intentname == "sayIP":
+        conf = read_configuration_file(CONFIG_INI)
+        action_wrapper(hermes, intentMessage, conf)
 
 
 def action_wrapper(hermes, intentMessage, conf):
@@ -55,12 +57,11 @@ def action_wrapper(hermes, intentMessage, conf):
         result_sentence = "Die IP-Adresse von diesem Gerät lautet {} Punkt {} Punkt {} Punkt {} .".format(
         ip[0], ip[1], ip[2], ip[3])
     else:
-        result_sentence = "Das Gerät ist gerade nicht mit dem Netzwerk verbunden."
+        result_sentence = "Das Gerät ist gerade nicht mit einem Netzwerk verbunden."
     current_session_id = intentMessage.session_id
     hermes.publish_end_session(current_session_id, result_sentence)
 
 
 if __name__ == "__main__":
     with Hermes("localhost:1883") as h:
-        h.subscribe_intent("domi:sayIP", subscribe_intent_callback) \
-.start()
+        h.subscribe_intents(subscribe_intent_callback).start()
